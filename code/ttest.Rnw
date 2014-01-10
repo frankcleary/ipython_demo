@@ -1,0 +1,29 @@
+\documentclass{article}
+\author{Frank Cleary}
+\title{Using Sweave}
+\begin{document}
+\maketitle
+\section{Reading in data}
+<<readdata>>=
+data <- read.csv("../input/speeds.csv")
+summary(data)
+t.test(data$X24GS, data$X208)
+@
+
+<<calc, include=FALSE>>=
+vel <- colMeans(data, na.rm=TRUE)
+sd <- sapply(data, sd, na.rm=TRUE)
+vel
+sd
+@
+\section{Plotting}
+<<plot>>=
+library(ggplot2)
+ggplot() + 
+  geom_bar(aes(x = names(vel), y = vel), stat='identity', alpha=0.7) +
+  geom_errorbar(aes(x = names(vel), ymax = vel + sd, ymin = vel - sd))
+qplot(names(vel), vel, geom='bar', stat='identity')
+ggplot(data=data) + geom_histogram(aes(x=data$X208))
+@
+
+\end{document}
